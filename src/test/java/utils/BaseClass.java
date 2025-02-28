@@ -7,6 +7,9 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.time.Duration;
 
 public class BaseClass {
@@ -30,5 +33,13 @@ public class BaseClass {
     public static void waitUntilThePageLoad() {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
         wait.until(ExpectedConditions.presenceOfElementLocated(By.tagName("body")));
+    }
+
+    public static boolean isBrokenLink(String url) throws IOException {
+        HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
+        connection.setRequestMethod("HEAD");
+        connection.connect();
+        int responseCode = connection.getResponseCode();
+        return responseCode < 400;
     }
 }
